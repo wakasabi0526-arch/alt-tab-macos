@@ -253,6 +253,9 @@ class LicenseManager {
     }
 
     func computeState() -> LicenseState {
+        // local-patch: self-build under GPL-3.0 — always report Pro so every Pro
+        // feature (styles, search, auto-size, extra shortcuts) is unlocked.
+        return .pro
         #if DEBUG
         if hasMockedLicense { return mockedTrialStartDate.map(trialState) ?? state }
         #endif
