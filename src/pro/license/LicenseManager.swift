@@ -255,23 +255,9 @@ class LicenseManager {
     func computeState() -> LicenseState {
         // local-patch: self-build under GPL-3.0 — always report Pro so every Pro
         // feature (styles, search, auto-size, extra shortcuts) is unlocked.
-        return .pro
-        #if DEBUG
-        if hasMockedLicense { return mockedTrialStartDate.map(trialState) ?? state }
-        #endif
-        if keychain.value(account: Self.keychainKeyAccount) != nil {
-            let lastValidationResult = defaults.bool(forKey: "lastValidationResult")
-            guard lastValidationResult else { return .trialExpired }
-            if let variant = keychain.value(account: Self.keychainVariantAccount),
-               let maxVersion = Self.versionLimitedVariants[variant] {
-                let currentVersion = currentAppVersion()
-                if currentVersion.compare(maxVersion, options: .numeric) == .orderedDescending {
-                    return .proExpired
-                }
-            }
-            return .pro
-        }
-        return computeTrialState()
+        // Original logic (keychain key + lastValidationResult + variant cap, else trial
+        // ladder) is intentionally replaced; see git history of this file.
+        .pro
     }
 
     private func computeTrialState() -> LicenseState {

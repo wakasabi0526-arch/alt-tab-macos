@@ -25,7 +25,8 @@ jobs:
             CODE_SIGN_IDENTITY=- \
             DEVELOPMENT_TEAM="" \
             OTHER_CODE_SIGN_FLAGS= \
-            2>&1 | tail -60
+            > build.log 2>&1 || { grep -E "error:" build.log | head -30; exit 1; }
+          grep -E "BUILD SUCCEEDED" build.log
       - name: Verify app
         run: |
           APP="DerivedData/Build/Products/Release/AltTab.app"
