@@ -33,8 +33,12 @@ jobs:
           test -d "$APP"
           codesign -dv "$APP" 2>&1 | head -6
           file "$APP/Contents/MacOS/AltTab"
+      - name: Zip with ditto (preserve symlinks)
+        run: |
+          cd DerivedData/Build/Products/Release
+          ditto -c -k --keepParent AltTab.app AltTab-selfbuild.zip
       - uses: actions/upload-artifact@v4
         with:
           name: AltTab
-          path: DerivedData/Build/Products/Release/AltTab.app
+          path: DerivedData/Build/Products/Release/AltTab-selfbuild.zip
           if-no-files-found: error
